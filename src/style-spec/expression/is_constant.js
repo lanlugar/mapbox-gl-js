@@ -25,7 +25,6 @@ function isFeatureConstant(e: Expression) {
 
     let result = true;
     e.eachChild(arg => {
-        console.log('arg', arg);
         if (result && !isFeatureConstant(arg)) { result = false; }
     });
     return result;

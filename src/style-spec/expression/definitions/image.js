@@ -14,7 +14,6 @@ export default class ImageExpression implements Expression {
     input: string;
 
     constructor(input: Expression) {
-        console.log('input', input);
         this.type = ImageType;
         this.input = input;
     }
@@ -24,23 +23,18 @@ export default class ImageExpression implements Expression {
             return context.error(`Expected two arguments.`);
         }
 
-        // console.log('args', args);
-
         const name = context.parse(args[1], 1, StringType);
-        console.log('name', name);
-        // if (!name) return null;
+        if (!name) return null;
 
-        // console.log('parse', args, context);
         return new ImageExpression(name);
     }
 
     evaluate(ctx: EvaluationContext) {
-        console.log('evaluate', this.input, this.input.evaluate(ctx));
+        console.log('evaluate', this.input.evaluate(ctx));
         return this.input.evaluate(ctx);
     }
 
     eachChild(fn: (Expression) => void) {
-        // console.log('each child', this.input, fn);
         fn(this.input);
     }
 

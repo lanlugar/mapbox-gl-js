@@ -101,7 +101,6 @@ class Coercion implements Expression {
             // created by properties that expect the 'formatted' type.
             return Formatted.fromString(valueToString(this.args[0].evaluate(ctx)));
         } else if (this.type.kind === 'image') {
-            console.log('image type!', this.args);
             return Image.fromString(valueToString(this.args[0].evaluate(ctx)));
         } else {
             return valueToString(this.args[0].evaluate(ctx));
