@@ -127,7 +127,6 @@ class WorkerTile {
 
         let error: ?Error;
         let glyphMap: ?{[string]: {[number]: ?StyleGlyph}};
-        // let availableImages: ?[string];
         let iconMap: ?{[string]: StyleImage};
         let patternMap: ?{[string]: StyleImage};
 
@@ -146,14 +145,6 @@ class WorkerTile {
 
         const icons = Object.keys(options.iconDependencies);
         if (icons.length) {
-            // actor.send('listImages', {icons}, (err, result) => {
-            //     if (!error) {
-            //         error = err;
-            //         console.log('result', result);
-            //         availableImages = result;
-            //         maybePrepare.call(this);
-            //     }
-            // });
             actor.send('getImages', {icons}, (err, result) => {
                 if (!error) {
                     error = err;
@@ -163,7 +154,6 @@ class WorkerTile {
             });
         } else {
             iconMap = {};
-            // availableImages = [];
         }
 
         const patterns = Object.keys(options.patternDependencies);

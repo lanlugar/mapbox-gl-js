@@ -67,7 +67,6 @@ class VectorTileSource extends Evented implements Source {
     }
 
     load() {
-        console.log('load', load);
         this._loaded = false;
         this.fire(new Event('dataloading', {dataType: 'source'}));
         this._tileJSONRequest = loadTileJSON(this._options, this.map._requestManager, (err, tileJSON) => {
@@ -128,7 +127,6 @@ class VectorTileSource extends Evented implements Source {
             showCollisionBoxes: this.map.showCollisionBoxes,
         };
         params.request.collectResourceTiming = this._collectResourceTiming;
-        console.log('vector tile source load tile');
 
         if (!tile.actor || tile.state === 'expired') {
             tile.actor = this.dispatcher.getActor();

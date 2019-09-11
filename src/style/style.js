@@ -1248,11 +1248,6 @@ class Style extends Evented {
 
     // Callbacks from web workers
 
-    // listImages(mapId: string, params: {}, callback: Callback<Array<string>>) {
-    //     const images = this.imageManager.listImages();
-    //     callback(null, images);
-    // }
-
     getImages(mapId: string, params: {icons: Array<string>}, callback: Callback<{[string]: StyleImage}>) {
         this.imageManager.getImages(params.icons, callback);
     }
