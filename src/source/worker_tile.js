@@ -60,7 +60,7 @@ class WorkerTile {
         this.returnDependencies = !!params.returnDependencies;
     }
 
-    parse(data: VectorTile, layerIndex: StyleLayerIndex, actor: Actor, callback: WorkerTileCallback) {
+    parse(data: VectorTile, layerIndex: StyleLayerIndex, availableImages: Array<string>, actor: Actor, callback: WorkerTileCallback) {
         this.status = 'parsing';
         this.data = data;
 
@@ -76,7 +76,8 @@ class WorkerTile {
             featureIndex,
             iconDependencies: {},
             patternDependencies: {},
-            glyphDependencies: {}
+            glyphDependencies: {},
+            availableImages
         };
 
         const layerFamilies = layerIndex.familiesBySource[this.source];
@@ -126,6 +127,7 @@ class WorkerTile {
 
         let error: ?Error;
         let glyphMap: ?{[string]: {[number]: ?StyleGlyph}};
+        // let availableImages: ?[string];
         let iconMap: ?{[string]: StyleImage};
         let patternMap: ?{[string]: StyleImage};
 
@@ -144,6 +146,14 @@ class WorkerTile {
 
         const icons = Object.keys(options.iconDependencies);
         if (icons.length) {
+            // actor.send('listImages', {icons}, (err, result) => {
+            //     if (!error) {
+            //         error = err;
+            //         console.log('result', result);
+            //         availableImages = result;
+            //         maybePrepare.call(this);
+            //     }
+            // });
             actor.send('getImages', {icons}, (err, result) => {
                 if (!error) {
                     error = err;
@@ -153,6 +163,7 @@ class WorkerTile {
             });
         } else {
             iconMap = {};
+            // availableImages = [];
         }
 
         const patterns = Object.keys(options.patternDependencies);

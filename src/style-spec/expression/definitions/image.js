@@ -30,7 +30,7 @@ export default class ImageExpression implements Expression {
     }
 
     evaluate(ctx: EvaluationContext) {
-        console.log('evaluate', this.input.evaluate(ctx));
+        console.log('evaluate', this.input, ctx, this.input.evaluate(ctx));
         return this.input.evaluate(ctx);
     }
 
