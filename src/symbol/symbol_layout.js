@@ -293,8 +293,9 @@ export function performSymbolLayout(bucket: SymbolBucket,
             if (image) {
                 shapedIcon = shapeIcon(
                     imagePositions[feature.icon],
-                    layout.get('icon-offset').evaluate(feature, {}),
-                    layout.get('icon-anchor').evaluate(feature, {}));
+                    layout,
+                    getDefaultHorizontalShaping(shapedTextOrientations.horizontal),
+                    feature);
                 if (bucket.sdfIcons === undefined) {
                     bucket.sdfIcons = image.sdf;
                 } else if (bucket.sdfIcons !== image.sdf) {
