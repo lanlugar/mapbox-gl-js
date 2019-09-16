@@ -4,7 +4,7 @@ import Anchor from './anchor';
 
 import {getAnchors, getCenterAnchor} from './get_anchors';
 import clipLine from './clip_line';
-import {shapeText, shapeIcon, WritingMode} from './shaping';
+import {shapeText, shapeIcon, WritingMode, fitIconToText} from './shaping';
 import {getGlyphQuads, getIconQuads} from './quads';
 import CollisionFeature from './collision_feature';
 import {warnOnce} from '../util/util';
@@ -293,9 +293,8 @@ export function performSymbolLayout(bucket: SymbolBucket,
             if (image) {
                 shapedIcon = shapeIcon(
                     imagePositions[feature.icon],
-                    layout,
-                    getDefaultHorizontalShaping(shapedTextOrientations.horizontal),
-                    feature);
+                    layout.get('icon-offset').evaluate(feature, {}),
+                    layout.get('icon-anchor').evaluate(feature, {}));
                 if (bucket.sdfIcons === undefined) {
                     bucket.sdfIcons = image.sdf;
                 } else if (bucket.sdfIcons !== image.sdf) {
@@ -376,6 +375,15 @@ function addFeature(bucket: SymbolBucket,
         iconAlongLine = layout.get('icon-rotation-alignment') === 'map' && layout.get('symbol-placement') !== 'point',
         symbolPlacement = layout.get('symbol-placement'),
         textRepeatDistance = symbolMinDistance / 2;
+
+    const iconTextFit = layout.get('icon-text-fit');
+    // Adjust shaped icon size when icon-text-fit is used.
+    if (shapedIcon && iconTextFit !== 'none') {
+        if (defaultHorizontalShaping) {
+            shapedIcon = fitIconToText(shapedIcon, defaultHorizontalShaping, iconTextFit,
+                                       layout.get('icon-text-fit-padding'), iconOffset, fontScale);
+        }
+    }
 
     const addSymbolAtAnchor = (line, anchor) => {
         if (anchor.x < 0 || anchor.x >= EXTENT || anchor.y < 0 || anchor.y >= EXTENT) {
@@ -605,10 +613,8 @@ function addSymbol(bucket: SymbolBucket,
     const verticalTextBoxEndIndex = verticalTextCollisionFeature ? verticalTextCollisionFeature.boxEndIndex : bucket.collisionBoxArray.length;
 
     if (shapedIcon) {
-        const iconQuads = getIconQuads(anchor, shapedIcon, layer,
-                            iconAlongLine, getDefaultHorizontalShaping(shapedTextOrientations.horizontal),
-                            feature);
         const iconRotate = layer.layout.get('icon-rotate').evaluate(feature, {});
+        const iconQuads = getIconQuads(shapedIcon, iconRotate);
         iconCollisionFeature = new CollisionFeature(collisionBoxArray, line, anchor, featureIndex, sourceLayerIndex, bucketIndex, shapedIcon, iconBoxScale, iconPadding, /*align boxes to line*/false, bucket.overscaling, iconRotate);
 
         numIconVertices = iconQuads.length * 4;
